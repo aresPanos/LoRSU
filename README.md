@@ -9,6 +9,7 @@ All datasets are publicly available. They should be downloaded at a pre-determin
 
 ## Fine-tune the CLIP-L-14 vision encoder using LoRSU and CLIP loss
 We fine-tune the CLIP-L-14 vision encoder using LoRSU and CLIP loss rank=64, top-2 attention heads for the CL-5 setting.
+
     python src/train.py --ft_method lorsu_v_clip --lorsu_rank 64 --lorsu_alpha 64 --sparsity 0.1 --top_k_heads 2 --num_train_epochs 5 --dataset tsi --dataroot </my/directory/datasets> --learning_rate 1e-5 --weight_decay 0.01 --dataloader_num_workers 6 --is_cl True --few_shots 5 --per_device_train_batch_size 16 --log_folder </my/directory/logs> --checkpoint_folder </my/directory/checkpoints>
 
 The fine-tuned vision encoder will be stored at  `</my/directory/checkpoints/CLIP-loss/CL/vsr/FS-5/LoRSU/rank-64_alpha-64/topk-heads-2/sparsity-100/epochs-5_batch-16_lr-000010/checkpoint_session-<session>_epoch-<epoch>.pt`
