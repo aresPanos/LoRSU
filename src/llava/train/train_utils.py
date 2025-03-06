@@ -111,8 +111,8 @@ class TrainingArguments(transformers.TrainingArguments):
     grad_total_points_mask: int = 1000
     train_last_k_layers: int = 16
     output_dir: Optional[str] = field(default="./output", metadata={"help": "Directory of the log files."})
-    log_folder: Optional[str] = field(default="/home/ap2313/rds/hpc-work/code/code-llm/logs", metadata={"help": "Directory of the log files."})
-    checkpoint_folder: Optional[str] = field(default="/home/ap2313/rds/hpc-work/code/code-llm/checkpoints", metadata={"help": "Directory of the checkpoint files."})
+    log_folder: Optional[str] = field(default="./logs", metadata={"help": "Directory of the log files."})
+    checkpoint_folder: Optional[str] = field(default="./checkpoints", metadata={"help": "Directory of the checkpoint files."})
     log_freq: int = 50
     eval_batch_size: int = 64
     seed: Optional[int] = field(default=2024) 
