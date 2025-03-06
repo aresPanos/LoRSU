@@ -1,1 +1,1 @@
-This is where the checkpoints of the model during fine-tuning are stored
+**This is where the checkpoints of the model during fine-tuning are stored.**
