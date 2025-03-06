@@ -98,11 +98,10 @@ class CLIP_Trainer:
 
         scaler = GradScaler()
         print_trainable_parameters(model, self.lggr)
-        for epoch in range(self.training_args.num_train_epochs):
+        for epoch in range(num_train_epochs):
             self.train_one_epoch(model, train_dataloader, epoch, optimizer, lr_scheduler, scaler)
-            completed_epoch = epoch + 1   
             
-        save_model_ckpt(self.training_args, model, completed_epoch, optimizer, scaler)
+        save_model_ckpt(self.training_args, model, num_train_epochs)
         
     def train_eval_cl(self):
         model, count_all_params, cfg = create_model(self.training_args, self.lggr)       
@@ -141,15 +140,13 @@ class CLIP_Trainer:
             scaler = GradScaler()
             print_trainable_parameters(model, self.lggr)
             for epoch in range(num_train_epochs):
-                self.train_one_epoch(model, train_dataloader, epoch, optimizer, lr_scheduler, scaler)
-                completed_epoch = epoch + 1    
+                self.train_one_epoch(model, train_dataloader, epoch, optimizer, lr_scheduler, scaler) 
             
-            save_model_ckpt_cl(self.training_args, model, session, completed_epoch)
+            save_model_ckpt_cl(self.training_args, model, session, num_train_epochs)
             if self.training_args.ft_method == 'lorsu_v_clip': 
-                model = load_ckpt_ssl(self.training_args, self.training_args.ckpt_fname.format(session+1, completed_epoch))                  
+                model = load_ckpt_ssl(self.training_args, self.training_args.ckpt_fname.format(session+1, num_train_epochs))                  
             self.lggr.info(f"#################   End of Session {session + 1}   #################\n\n")  
-            
-        save_model_ckpt_cl(self.training_args, model, completed_epoch, session)
+    
     
     def train_eval(self):
         if self.data_args.is_cl:
