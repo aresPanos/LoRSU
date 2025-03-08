@@ -1,6 +1,7 @@
 import math
-import os
+from argparse import Namespace
 import time
+from dataclasses import asdict
 from typing import Optional
 from loguru._logger import Logger
 
@@ -228,46 +229,49 @@ class CLIP_Trainer:
                                                                                self.model_args.model_base, 
                                                                                self.model_args.model_name, 
                                                                                fine_tuned_clip_model)
-        model.eval()    
+        model.eval()  
+        model_args, data_args, training_args = asdict(self.model_args), asdict(self.data_args), asdict(self.training_args)
+        args = {**model_args, **data_args, **training_args}
+        args = Namespace(**args)  
         gb = 1024.0 ** 3
         
-        acc_gtsrb, num_samples_gtsrb, time_elapsed_gtsrb = eval_gtsrbvqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_gtsrb, num_samples_gtsrb, time_elapsed_gtsrb = eval_gtsrbvqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"GTSRB: acc={acc_gtsrb:.2f}%\t#Samples={num_samples_gtsrb}\tET={time_elapsed_gtsrb/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
 
-        acc_tsivqa, num_samples_tsivqa, time_elapsed_tsivqa = eval_tsivqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_tsivqa, num_samples_tsivqa, time_elapsed_tsivqa = eval_tsivqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"TSIVQA: acc={acc_tsivqa:.2f}%\t#Samples={num_samples_tsivqa}\tET={time_elapsed_tsivqa/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_counteranimal, num_samples_counteranimal, time_elapsed_counteranimal = eval_counteranimalvqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_counteranimal, num_samples_counteranimal, time_elapsed_counteranimal = eval_counteranimalvqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"CounterAnimal: acc={acc_counteranimal:.2f}%\t#Samples={num_samples_counteranimal}\tET={time_elapsed_counteranimal/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
                 
-        acc_aircraft, num_samples_aircraft, time_elapsed_aircraft = eval_aircraftvqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_aircraft, num_samples_aircraft, time_elapsed_aircraft = eval_aircraftvqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"FGVC-Aircraft: acc={acc_aircraft:.2f}%\t#Samples={num_samples_aircraft}\tET={time_elapsed_aircraft/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_eurosat, num_samples_eurosat, time_elapsed_eurosat = eval_eurosatvqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_eurosat, num_samples_eurosat, time_elapsed_eurosat = eval_eurosatvqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"EuroSAT: acc={acc_eurosat:.2f}%\t#Samples={num_samples_eurosat}\tET={time_elapsed_eurosat/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_dalle, num_samples_dalle, time_elapsed_dalle = eval_dallevqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_dalle, num_samples_dalle, time_elapsed_dalle = eval_dallevqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"DALLE-VQA: acc={acc_dalle:.2f}%\t#Samples={num_samples_dalle}\tET={time_elapsed_dalle/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_vsr, num_samples_vsr, time_elapsed_vsr = eval_vsr(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_vsr, num_samples_vsr, time_elapsed_vsr = eval_vsr(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"VSR: acc={acc_vsr:.2f}%\t#Samples={num_samples_vsr}\tET={time_elapsed_vsr/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
             
-        acc_hm, num_samples_hm, time_elapsed_hm = eval_hm(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_hm, num_samples_hm, time_elapsed_hm = eval_hm(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"HM: acc={acc_hm:.2f}%\t#Samples={num_samples_hm}\tET={time_elapsed_hm/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_mmvp, num_samples_mmvp, time_elapsed_mmvp = eval_mmvpvqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_mmvp, num_samples_mmvp, time_elapsed_mmvp = eval_mmvpvqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"MMVP-VQA: acc={acc_mmvp:.2f}%\t#Samples={num_samples_mmvp}\tET={time_elapsed_mmvp/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")
         
-        acc_visonlyqa, num_samples_visonlyqa, time_elapsed_visonlyqa = eval_visonlyqa(self.model_args, self.data_args, self.training_args, model, image_processor, tokenizer)
+        acc_visonlyqa, num_samples_visonlyqa, time_elapsed_visonlyqa = eval_visonlyqa(args, model, image_processor, tokenizer)
         gpu_memory = torch.cuda.max_memory_allocated() / gb
         self.lggr.info(f"VisOnlyQA: acc={acc_visonlyqa:.2f}%\t#Samples={num_samples_visonlyqa}\tET={time_elapsed_visonlyqa/60.:.1f} mins\tGPU memory allocated={gpu_memory:.1f} GB")  
             
